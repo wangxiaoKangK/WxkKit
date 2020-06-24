@@ -1,0 +1,6 @@
+framework module WxkNetKit {
+  umbrella header "WxkNetKit.h"
+
+  export *
+  module * { export * }
+}

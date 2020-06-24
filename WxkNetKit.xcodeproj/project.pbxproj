@@ -6,11 +6,25 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		0D5677A024A3656400F0A4F4 /* AG */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 0D5677A124A3656400F0A4F4 /* Build configuration list for PBXAggregateTarget "AG" */;
+			buildPhases = (
+				0D5677A424A365BF00F0A4F4 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = AG;
+			productName = AG;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0D56778C24A362F900F0A4F4 /* WxkNetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D56778224A362F900F0A4F4 /* WxkNetKit.framework */; };
 		0D56779124A362F900F0A4F4 /* WxkNetKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D56779024A362F900F0A4F4 /* WxkNetKitTests.m */; };
 		0D56779324A362F900F0A4F4 /* WxkNetKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D56778524A362F900F0A4F4 /* WxkNetKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0D56779E24A3638500F0A4F4 /* WxkNetManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D56779C24A3638500F0A4F4 /* WxkNetManager.h */; };
+		0D56779E24A3638500F0A4F4 /* WxkNetManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D56779C24A3638500F0A4F4 /* WxkNetManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0D56779F24A3638500F0A4F4 /* WxkNetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D56779D24A3638500F0A4F4 /* WxkNetManager.m */; };
 /* End PBXBuildFile section */
 
@@ -158,6 +172,9 @@
 					0D56778A24A362F900F0A4F4 = {
 						CreatedOnToolsVersion = 11.3;
 					};
+					0D5677A024A3656400F0A4F4 = {
+						CreatedOnToolsVersion = 11.3;
+					};
 				};
 			};
 			buildConfigurationList = 0D56777C24A362F900F0A4F4 /* Build configuration list for PBXProject "WxkNetKit" */;
@@ -175,6 +192,7 @@
 			targets = (
 				0D56778124A362F900F0A4F4 /* WxkNetKit */,
 				0D56778A24A362F900F0A4F4 /* WxkNetKitTests */,
+				0D5677A024A3656400F0A4F4 /* AG */,
 			);
 		};
 /* End PBXProject section */
@@ -195,6 +213,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0D5677A424A365BF00F0A4F4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#\nif [ \"${ACTION}\" = \"build\" ]\nthen\n\n#要build的target名\ntarget_Name=${PROJECT_NAME}\n\n#build之后的文件夹路径\nbuild_DIR=${SRCROOT}/build\n\n#真机build生成的framework文件路径\nDEVICE_DIR_Framework=${build_DIR}/Release-iphoneos/${PROJECT_NAME}.framework\n\n#模拟器build生成的framework文件路径\nSIMULATOR_DIR_Framework=${build_DIR}/Release-iphonesimulator/${PROJECT_NAME}.framework\n\n#目标文件夹路径\nINSTALL_DIR=${SRCROOT}/Products/${PROJECT_NAME}\n\n#判断build文件夹是否存在，存在则删除\nif [ -d \"${build_DIR}\" ]\nthen\nrm -rf \"${build_DIR}\"\nfi\n\n#判断目标文件夹是否存在，存在则删除该文件夹\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n#创建目标文件夹\nmkdir -p \"${INSTALL_DIR}\"\n\n#build之前clean一下\nxcodebuild -target ${target_Name} clean\n\n#真机build\nxcodebuild -target ${target_Name} -configuration Release -sdk iphoneos\n\n#模拟器build\nxcodebuild -target ${target_Name} -configuration Release -sdk iphonesimulator\n\n#复制头文件到目标文件夹\ncp -R \"${DEVICE_DIR_Framework}\" \"${INSTALL_DIR}\"\n\n#合成模拟器和真机包\nlipo -create \"${DEVICE_DIR_Framework}/${PROJECT_NAME}\" \"${SIMULATOR_DIR_Framework}/${PROJECT_NAME}\" -output \"${INSTALL_DIR}/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n#打开目标文件夹\nopen \"${INSTALL_DIR}\"\n\nfi\n\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0D56777E24A362F900F0A4F4 /* Sources */ = {
@@ -350,11 +388,14 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WxkNetKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = wxk.WxkNetKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -372,11 +413,14 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WxkNetKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = wxk.WxkNetKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -416,6 +460,22 @@
 			};
 			name = Release;
 		};
+		0D5677A224A3656400F0A4F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0D5677A324A3656400F0A4F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -442,6 +502,15 @@
 			buildConfigurations = (
 				0D56779A24A362F900F0A4F4 /* Debug */,
 				0D56779B24A362F900F0A4F4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0D5677A124A3656400F0A4F4 /* Build configuration list for PBXAggregateTarget "AG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0D5677A224A3656400F0A4F4 /* Debug */,
+				0D5677A324A3656400F0A4F4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
