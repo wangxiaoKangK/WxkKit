@@ -12,4 +12,9 @@
 - (void)wxkTest {
     NSLog(@"--------%s",__func__);
 }
+
+- (void)wxkTest2 {
+    NSLog(@"--------%s",__func__);
+}
+
 @end
